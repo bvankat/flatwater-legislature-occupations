@@ -1,0 +1,118 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Nebraska Legislator Occupations - Flatwater Free Press</title>
+	
+	<script src="https://d3js.org/d3.v4.js"></script>
+
+	<style type="text/css">
+		body { font-family: sans-serif; }
+		div#scratch-chart { display: flex; flex-wrap: wrap; justify-content: flex-start; }
+		div.senator { cursor: pointer; border: 1px solid white; padding: 10px; margin: 1px; }
+		div.senator p { font-size: 11px; color: #fff;font-family: sans-serif; margin: 0; text-shadow: 0px 1px 1px rgba(0,0,0,0.5); }
+		div.senator:hover { border: 1px solid #222; }
+		div.tooltip { position: absolute; top: 0; left: 0; font-family: sans-serif; font-size: 14px; font-weight: bold; max-width: 200px;}
+		span.small { font-size: 80%; font-weight: normal; }
+		p.explain { font-size: 13px; color: #333; }
+	</style>
+</head>
+
+<body>
+
+<!-- Create a div where the graph will take place -->
+<div id="scratch-chart"></div>
+<p class="explain">Click for details about each senator</p>
+
+<!-- <div id="chart"></div> -->
+
+<!-- Load color palettes -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+</body>
+
+
+<script type="module">
+
+	var google_sheet_csv = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSccghIhq2IZ5aB5UQ4qKn7Q9eD2T-kHVffYXk0IMH-1n5UL8POQ3gw-d_l8S80NNqpDI0NcbnQg6E2/pub?output=csv"
+
+	d3.csv(google_sheet_csv, function(data) {	
+		
+		var size = 55;
+		
+		const groupByCategory =
+		d3.nest()
+		  .key(d => d.category)
+		  .entries(data);		
+		console.log(groupByCategory);
+		
+		function cellColor(data) {
+			var color;
+			
+			var colors = ["#a6cee3","#1f78b4","#869b73","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#b15928","#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#a65628","#f781bf","#999999"]
+			//var colors = d3.scaleSequential()
+			//.interpolator(d3.interpolateCividis)
+			//.domain([0,16])
+									
+			if (data == "Farming") { color = colors[1] }
+			else if (data == "Semi-retired/Retired") { color = colors[18] }
+			else if (data == "Attorney") { color = colors[3] }
+			else if (data == "Business owner") { color = colors[4] }
+			else if (data == "Real Estate") { color = colors[5] }
+			else if (data == "Banking / Finance") { color = colors[6] }
+			else if (data == "Nonprofit executive") { color = colors[7] }
+			else if (data == "Consulting") { color = colors[8] }
+			else if (data == "Education") { color = colors[9] }
+			else if (data == "Chiropractor") { color = colors[11] }
+			else if (data == "Not employed outside of Legislature") { color = colors[2] }
+			else if (data == "Paralegal") { color = colors[12] }
+			else if (data == "Union leader") { color = colors[0] }
+			else if (data == "Insurance") { color = colors[14] }
+			else if (data == "Career specialist") { color = colors[16] }
+			else if (data == "Government affairs") { color = colors[17] }
+			else { color = "#222"}
+			return color;
+		}
+		
+		
+		// create a tooltip
+		  var Tooltip = d3.select("#scratch-chart")
+			.append("div")
+			.style("opacity", 0)
+			.attr("class", "tooltip")
+			.style("background-color", "white")
+			.style("border", "solid")
+			.style("border-width", "2px")
+			.style("padding", "10px")
+		
+		var tip = function(d) {			
+			Tooltip
+			  .style("opacity", 1)
+			  .style("z-index", 100)
+			  .style("top", d3.event.pageY + "px")
+			  .style("left", d3.event.pageX + "px")
+			  .html(d.senator + "<br><span class='small'>" + d.bio_job)
+			  
+		  }
+		
+	
+	d3.select("#scratch-chart")
+	  .selectAll("div")
+	  .data(data)
+	  .enter()
+	  .append("div")
+	  .attr("class", "senator")
+	  .on("click", tip)
+	  .style("width", size + "px" )
+	  .style("height", size + "px")
+	  .style("background-color", function(d) { return cellColor(d.category) })
+	  .append("p")
+	  .text(function(d){ return d.category })
+	})
+	
+	
+</script>
+
+</html>
