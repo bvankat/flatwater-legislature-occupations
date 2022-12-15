@@ -1,4 +1,3 @@
-<!-- Code from d3-graph-gallery.com -->
 <!DOCTYPE html>
 
 <head>
@@ -22,11 +21,8 @@
 
 <body>
 
-<!-- Create a div where the graph will take place -->
 <div id="scratch-chart"></div>
 <p class="explain">Click for details about each senator</p>
-
-<!-- <div id="chart"></div> -->
 
 <!-- Load color palettes -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -75,8 +71,7 @@
 			else { color = "#222"}
 			return color;
 		}
-		
-		
+				
 		// create a tooltip
 		  var Tooltip = d3.select("#scratch-chart")
 			.append("div")
@@ -96,8 +91,7 @@
 			  .html(d.senator + "<br><span class='small'>" + d.bio_job)
 			  
 		  }
-		
-	
+			
 	d3.select("#scratch-chart")
 	  .selectAll("div")
 	  .data(data)
